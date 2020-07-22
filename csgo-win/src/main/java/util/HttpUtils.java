@@ -180,7 +180,7 @@ public class HttpUtils {
      * @param url 请求地址
      * @param json 请求参数
      * **/
-    public static CloseableHttpResponse doPostByFormData(String url,JSONObject json) throws IOException {
+    public static CloseableHttpResponse doPostByFormData(String url,JSONObject json,String author) throws IOException {
         if (json.isEmpty()){
             return null;
         }
@@ -190,6 +190,9 @@ public class HttpUtils {
             list.add(new BasicNameValuePair(map.getKey(),map.getValue().toString()));
         }
         post.setEntity(new UrlEncodedFormEntity(list));
+        if (author != null){
+            post.setHeader("Authorization","Bearer "+ author);
+        }
 
         response = (CloseableHttpResponse) createClient().execute(post);
 
