@@ -1,13 +1,6 @@
 package imp;
 
 import mapper.IElements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.List;
 
 public enum EnumLogin implements IElements{
     USER_NAME("用户名","input[aria-label=\"登录账号\"]"),
@@ -39,14 +32,7 @@ public enum EnumLogin implements IElements{
     }
 
     @Override
-    public WebElement findBy(WebDriverWait webDriverWait, WebDriver driver) {
-        webDriverWait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(this.elPath)));
-        return driver.findElement(By.cssSelector(this.elPath));
-    }
-
-    @Override
-    public List<WebElement> findsBy(WebDriverWait webDriverWait, WebDriver driver) {
-        webDriverWait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(this.elPath)));
-        return driver.findElements(By.cssSelector(this.elPath));
+    public String getElementPath() {
+        return this.getElPath();
     }
 }

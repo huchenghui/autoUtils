@@ -1,10 +1,22 @@
 package listeners;
 
+import config.EnumWebDriver;
+import io.qameta.allure.Allure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+import util.WebUtils;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Listener implements ITestListener {
+
+    private final Logger log = LoggerFactory.getLogger(Listener.class);
     @Override
     public void onTestStart(ITestResult iTestResult) {
 
@@ -15,25 +27,21 @@ public class Listener implements ITestListener {
 
     }
 
-
     @Override
     public void onTestFailure(ITestResult iTestResult) {
-
-//        File file = ((TakesScreenshot) ConfigTest.driver).getScreenshotAs(OutputType.FILE);
-//        int len = -1;
-//        byte[] c = new byte[1024];
-//        try (
-//                InputStream inputStream = new FileInputStream(file);
-//                OutputStream outputStream = new FileOutputStream("D:\\1.png");
-//        ) {
-//            while ((len = (inputStream.read(c))) != -1) {
-//                outputStream.write(c,0,len);
-//                outputStream.flush();
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+        String filePath = WebUtils.replay(WebUtils.getDriver().getTitle());
+        StringBuilder builder = new StringBuilder(EnumWebDriver.SCREEN_SHOT_AS.getVal());
+        builder.append(format.format(new Date()));
+        builder.append(filePath);
+        builder.append(".png");
+        WebUtils.getScreenShotAs(builder.toString());
+        try {
+            log.info("图片地址 >> {}",builder.toString());
+            Allure.addAttachment("失败自动截图 >>> ",new FileInputStream(builder.toString()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

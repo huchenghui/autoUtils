@@ -4,7 +4,11 @@ public enum EnumHttp {
 
     MAX_TOTAL("最大连接数","40"),
     MAX_PRE_ROUTER("路由默认最大连接数","20"),
-    TIME_OUT("超时时间","30000")
+    TIME_OUT("超时时间","30000"),
+    API_DOMAIN("域名",""),
+    USERNAME("用户名","admin"),
+    PASSWORD("密码","123456"),
+    IMG_PATH("图片路径","D:\\img\\1.png");
     ;
 
 

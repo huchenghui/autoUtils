@@ -10,6 +10,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class FileUtils {
@@ -97,6 +99,11 @@ public class FileUtils {
         }
     }
 
+    /**
+     * 按行读取
+     * @param rowNo 行号
+     * @return 返回有序map
+     * **/
     public Map<String, Object> readLine(int rowNo){
         Map<String,Object> map = new LinkedHashMap<>();
         row = sheet.getRow(rowNo);
@@ -171,6 +178,23 @@ public class FileUtils {
     }
 
     /**
+     * 读取文档内单元格内容相同的所有行
+     * @param content 单元格内容
+     * **/
+    public List<Map<String,Object>> read(String content){
+        List<Map<String,Object>> list = new LinkedList<>();
+        for (int i = 1;i < this.cols;i++){
+            Map<String,Object> map = this.readLine(i);
+            if (map.containsValue(content)){
+                list.add(map);
+            }else{
+                break;
+            }
+        }
+        return list;
+    }
+
+    /**
      * 通过单元格内容获取单元额坐标
      * @param cellContent 单元格内容
      * **/
@@ -212,6 +236,5 @@ public class FileUtils {
     public int getCols(){
         return this.cols;
     }
-
 
 }

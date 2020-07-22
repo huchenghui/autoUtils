@@ -8,13 +8,13 @@ import java.sql.*;
 
 public class SqlUtils {
 
-    private final Logger LOG = LoggerFactory.getLogger(SqlUtils.class);
-    private Connection con = null;
+    private static final Logger LOG = LoggerFactory.getLogger(SqlUtils.class);
+    private static Connection con = null;
 
     /**
      * 连接数据库
      * **/
-    private Connection getCon() throws ClassNotFoundException, SQLException {
+    private static Connection getCon() throws ClassNotFoundException, SQLException {
         Class.forName(EnumMysql.DRIVER_PATH.getVal());
         if (con == null){
             con = DriverManager.getConnection(getUrl(),EnumMysql.USER_NAME.getVal()
@@ -28,7 +28,7 @@ public class SqlUtils {
      * 查询单条记录
      * @param sql sql语句
      * **/
-    public String select(String sql) throws SQLException, ClassNotFoundException {
+    public static String select(String sql) throws SQLException, ClassNotFoundException {
         Statement statement = getCon().createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
         String val = null;
@@ -42,12 +42,12 @@ public class SqlUtils {
      * 查询多条记录
      * @param sql sql语句
      * **/
-    public ResultSet selectAll(String sql) throws SQLException, ClassNotFoundException {
+    public static ResultSet selectAll(String sql) throws SQLException, ClassNotFoundException {
         Statement statement = getCon().createStatement();
         return statement.executeQuery(sql);
     }
 
-    public void close(){
+    public static void close(){
         if (con != null){
             try {
                 con.close();
@@ -60,7 +60,7 @@ public class SqlUtils {
     /**
      * 数据库连接地址
      * **/
-    private String getUrl(){
+    private static String getUrl(){
         StringBuilder builder = new StringBuilder("jdbc:mysql://");
         builder.append(EnumMysql.DOMAIN.getVal());
         builder.append(EnumMysql.DATABASE.getVal());

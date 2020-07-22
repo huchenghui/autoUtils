@@ -7,9 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -36,27 +34,25 @@ import java.util.Map;
 
 public class HttpUtils {
 
-    private final Logger LOG = LoggerFactory.getLogger(HttpUtils.class);
-    private CloseableHttpClient client = null;
-    private CloseableHttpResponse response = null;
+    private static final Logger LOG = LoggerFactory.getLogger(HttpUtils.class);
+    private static CloseableHttpClient client = null;
+    private static CloseableHttpResponse response = null;
 
-    public HttpUtils(){
-
-    }
 
 
     /**
      * 解析响应
      * @param response 响应体
      * **/
-    public String analysis(HttpResponse response) throws IOException {
+    public static String analysis(HttpResponse response) throws IOException {
         StringBuilder builder = new StringBuilder();
         InputStream stream = response.getEntity().getContent();
         InputStreamReader inputStreamReader = new InputStreamReader(stream, StandardCharsets.UTF_8);
         BufferedReader reader = new BufferedReader(inputStreamReader);
 
-        while (reader.read() != -1) {
-            builder.append(reader.readLine());
+        String len;
+        while ((len = reader.readLine()) != null){
+            builder.append(len);
         }
         LOG.info(builder.toString());
         return builder.toString();
@@ -65,7 +61,7 @@ public class HttpUtils {
     /**
      * 释放资源
      * **/
-    public void consumerResource() throws IOException {
+    public static void consumerResource() throws IOException {
         if (response != null){
             response.close();
         }
@@ -81,7 +77,7 @@ public class HttpUtils {
      * @param fieldName 接口字段
      * @param filePath 文件路径
      * **/
-    public CloseableHttpResponse doUpload(String url, JSONObject json,String fieldName,File filePath) throws IOException {
+    public static CloseableHttpResponse doUpload(String url, JSONObject json,String fieldName,File filePath,String author) throws IOException {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.addBinaryBody(fieldName,new FileInputStream(filePath),ContentType.DEFAULT_BINARY,filePath.getName());
 
@@ -92,6 +88,9 @@ public class HttpUtils {
         }
         HttpPost post = new HttpPost(url);
         post.setEntity(builder.build());
+        if (author != null){
+            post.setHeader("Authorization","Bearer "+ author);
+        }
 
         response = (CloseableHttpResponse) createClient().execute(post);
 
@@ -103,7 +102,7 @@ public class HttpUtils {
      * @param url 请求地址
      * @param json 请求参数
      **/
-    public CloseableHttpResponse doGet(String url,JSONObject json) throws URISyntaxException, IOException {
+    public static CloseableHttpResponse doGet(String url,JSONObject json,String author) throws URISyntaxException, IOException {
         URIBuilder builder = new URIBuilder(url);
         if (json != null){
             for (Map.Entry<String,Object> entry : json.entrySet()){
@@ -112,6 +111,9 @@ public class HttpUtils {
         }
 
         HttpGet get = new HttpGet(builder.build());
+        if (author != null){
+            get.setHeader("Authorization","Bearer "+ author);
+        }
 
         LOG.info("Get对象 >> {}",get);
 
@@ -126,15 +128,49 @@ public class HttpUtils {
      * @param url 请求地址
      * @param jsonBody 请求参数
      * **/
-    public CloseableHttpResponse doPost(String url,JSONObject jsonBody) throws Exception {
-        StringEntity entity = null;
+    public static CloseableHttpResponse doPost(String url,JSONObject jsonBody,String author) throws Exception {
+        return doRequest("post",url,jsonBody,author);
+    }
+    
+    public static CloseableHttpResponse doPut(String url,JSONObject jsonBody,String author) throws Exception {
+        return doRequest("put",url,jsonBody,author);
+    }
+    
+    public static CloseableHttpResponse doDelete(String url,JSONObject jsonBody,String author) throws Exception {
+        return doRequest("delete",url,jsonBody,author);
+    }
+    
+
+    private static CloseableHttpResponse doRequest(String method,String url,JSONObject jsonBody,String author) throws IOException {
+        StringEntity entity;
+        RequestBuilder request = null;
+        
+        if ("post".equalsIgnoreCase(method)){
+            request = RequestBuilder.post(url);
+        }else if ("put".equalsIgnoreCase(method)){
+            request = RequestBuilder.put(url);
+
+        }else if ("delete".equalsIgnoreCase(method)){
+            request = RequestBuilder.delete(url);
+        }
+        
         if (jsonBody != null){
             entity = new StringEntity(jsonBody.toJSONString(), ContentType.APPLICATION_JSON);
+            if (request != null) {
+                request.setEntity(entity);
+            }
         }
-        HttpPost post = new HttpPost(url);
-        post.setEntity(entity);
+        
+        if (author != null){
+            if (request != null) {
+                request.setHeader("Authorization","Bearer "+ author);
+            }
+        }
 
-        response = (CloseableHttpResponse) createClient().execute(post);
+
+        if (request != null) {
+            response = (CloseableHttpResponse) createClient().execute(request.build());
+        }
 
         return response;
     }
@@ -144,7 +180,7 @@ public class HttpUtils {
      * @param url 请求地址
      * @param json 请求参数
      * **/
-    public CloseableHttpResponse doPostByFormData(String url,JSONObject json) throws IOException {
+    public static CloseableHttpResponse doPostByFormData(String url,JSONObject json) throws IOException {
         if (json.isEmpty()){
             return null;
         }
@@ -160,11 +196,10 @@ public class HttpUtils {
         return response;
     }
 
-
     /**
      * 创建HttpClient客户端
      * **/
-    private HttpClient createClient(){
+    private static HttpClient createClient(){
         if (client == null){
             client = HttpClients.custom()
                     .setConnectionManager(poolingManager())
@@ -180,9 +215,8 @@ public class HttpUtils {
     /**
      * 连接配置
      * **/
-    private RequestConfig requestConfig(){
+    private static RequestConfig requestConfig(){
         int timeOut = Integer.parseInt(EnumHttp.TIME_OUT.getVal());
-
         return RequestConfig.custom()
                     .setConnectionRequestTimeout(timeOut)
                     .setSocketTimeout(timeOut)
@@ -194,7 +228,7 @@ public class HttpUtils {
     /**
      * 创建连接池
      * **/
-    private PoolingHttpClientConnectionManager poolingManager(){
+    private static PoolingHttpClientConnectionManager poolingManager(){
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.getSocketFactory())
                 .register("https", SSLConnectionSocketFactory.getSocketFactory())
