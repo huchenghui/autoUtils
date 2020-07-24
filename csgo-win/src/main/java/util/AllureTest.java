@@ -1,11 +1,11 @@
 package util;
 
+import com.alibaba.fastjson.JSONObject;
+import dy_mini_program.about_custom.DyLogin;
+import io.qameta.allure.Allure;
 import listeners.Listener;
-import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-
-import java.awt.*;
 
 @Listeners({Listener.class})
 public class AllureTest {
@@ -13,11 +13,11 @@ public class AllureTest {
     @Test
     public void t(){
         try {
-            WebUtils webUtils = new WebUtils("http://www.tianmao.com");
-        } catch (AWTException e) {
+            JSONObject str = DyLogin.doLogin("admin", "admin");
+            Allure.description("{{响应数据}}\n\n" + str.toJSONString());
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Assert.fail();
     }
 
 

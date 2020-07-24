@@ -35,6 +35,7 @@ public class RegisterTest {
 
             String statusCode = null;
             String resp = Register.register(userName, password);
+            HttpUtils.addAllureResp(resp);
             if ("".equals(userName) || userName.trim().equals("") || "".equals(password) || password.trim().equals("")){
                 try {
                     statusCode = JSON.parseObject(resp).getString("statusCode");

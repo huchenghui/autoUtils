@@ -1,10 +1,15 @@
 package dy_mini_program_test;
 
 import bean.PrizeConfigBean;
+import bean.RateConfigBean;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import config.EnumHttp;
 import dy_assert.AssertSql;
 import dy_mini_program.about_custom.DyLogin;
 import dy_mini_program.prize.PrizeConfigFlow;
+import dy_mini_program.prize.RateConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -45,30 +50,49 @@ public class PrizeConfigTest {
     @Test(dataProviderClass = PrizeConfigBean.class,dataProvider = "prizeBean")
     public void prizeConfig(PrizeConfigBean bean,String expect){
         try {
-            String assertText = PrizeConfigFlow.prizeConfigFlow(bean, token).getString("id");
+            JSONObject assertText = PrizeConfigFlow.prizeConfigFlow(bean, token);
             log.info("id >> {}", assertText);
-            Assert.assertEquals(expect,SqlUtils.select(AssertSql.prizeAssert(assertText)));
+            HttpUtils.addAllureResp(assertText.toJSONString());
+            Assert.assertEquals(expect,SqlUtils.select(AssertSql.prizeAssert(assertText.getString("id"))));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Test(description = "奖品配置列表")
+    @Test(description = "prize config list")
     public void prizeConfigList(){
         try {
-            int size = PrizeConfigFlow.getPrizeConfigList(token).size();
-            Assert.assertEquals(8,size);
+            JSONArray arr = PrizeConfigFlow.getPrizeConfigList(token);
+            HttpUtils.addAllureResp(arr.toJSONString());
+            Assert.assertEquals(8,arr.size());
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    @Test
+    @Test(description = "prize picture upload")
     public void uploadImg(){
         try {
-            String status = PrizeConfigFlow.uploadPrizeImg(new File(EnumHttp.IMG_PATH.getVal()),token).getString("status");
-            Assert.assertEquals("done",status);
+            JSONObject status = PrizeConfigFlow.uploadPrizeImg(new File(EnumHttp.IMG_PATH.getVal()),token);
+            HttpUtils.addAllureResp(status.toJSONString());
+            Assert.assertEquals("done",status.getString("status"));
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test(dataProviderClass = RateConfigBean.class,dataProvider = "rate")
+    public void rateConfig(String rate,String expect){
+        try {
+            String res = RateConfig.rateConfig(rate,token);
+            HttpUtils.addAllureResp(res);
+            if (res.contains("statusCode")){
+                Assert.assertEquals(expect,JSON.parseObject(res).getString("statusCode"));
+            }else {
+                Assert.assertEquals(Integer.parseInt(expect),JSON.parseArray(res).size());
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

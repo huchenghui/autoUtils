@@ -1,6 +1,7 @@
 package dy_mini_program_test;
 
 import com.alibaba.fastjson.JSON;
+import config.EnumHttp;
 import dy_mini_program.about_custom.DyLogin;
 import dy_mini_program.about_custom.Register;
 import dy_mini_program.about_custom.UpdatePwd;
@@ -23,8 +24,8 @@ public class UpdatePwdTest {
     @BeforeClass
     public void before(){
         Random r = new Random();
-        userName = "hch" + r.nextInt(10000);
-        pwd = "test123456";
+        userName = EnumHttp.USERNAME.getVal();
+        pwd = EnumHttp.PASSWORD.getVal();
         try {
             Register.register(userName,pwd);
             token = DyLogin.doLogin(userName,pwd).getString("access_token");
@@ -46,6 +47,7 @@ public class UpdatePwdTest {
     public void updatePwd(String oldPwd,String newPwd,String expect){
         try {
             String str = UpdatePwd.updatePwd(oldPwd,newPwd,token);
+            HttpUtils.addAllureResp(str);
             if (str.length() > 0){
                 Assert.assertEquals(JSON.parseObject(str).getString("statusCode"),expect);
             }else {

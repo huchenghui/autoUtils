@@ -1,5 +1,6 @@
 package dy_mini_program_test;
 
+import com.alibaba.fastjson.JSONObject;
 import config.EnumHttp;
 import dy_mini_program.about_custom.DyLogin;
 import dy_mini_program.sys_setting.SysSettingFlow;
@@ -41,8 +42,9 @@ public class SysSettingTest {
     @Test
     public void uploadBanner(){
         try {
-            String status = SysSettingFlow.uploadBanner(new File("D:\\img\\1.png"),token).getString("status");
-            Assert.assertEquals("done",status);
+            JSONObject status = SysSettingFlow.uploadBanner(new File("D:\\img\\1.png"),token);
+            HttpUtils.addAllureResp(status.toJSONString());
+            Assert.assertEquals("done",status.getString("status"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,8 +56,9 @@ public class SysSettingTest {
             if ("".equals(content)){
                 content = null;
             }
-            String notice = SysSettingFlow.noticeConfig(content,token).getString("notice");
-            Assert.assertEquals(content,notice);
+            JSONObject notice = SysSettingFlow.noticeConfig(content,token);
+            HttpUtils.addAllureResp(notice.toJSONString());
+            Assert.assertEquals(content,notice.getString("notice"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,8 +70,9 @@ public class SysSettingTest {
             if ("".equals(content)){
                 content = null;
             }
-            String rule = SysSettingFlow.ruleConfig(content,token).getString("rule");
-            Assert.assertEquals(content,rule);
+            JSONObject rule = SysSettingFlow.ruleConfig(content,token);
+            HttpUtils.addAllureResp(rule.toJSONString());
+            Assert.assertEquals(rule.getString("rule"),content);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +92,6 @@ public class SysSettingTest {
                         "术室（地址：石家庄市建华北大街138号百川大厦诉讼服务中心。法官王建勇，电话：0311-85051562）选取评估机构；于公告期满次日起第15日（遇法定假日顺延）" +
                         "下午15时到标的物所在地对拟评估标的物进行现场勘验；于公告期满次日起第30日（遇法定假日顺延）上午10时到本院1315室领取评估报告。评估报告异议期为自收到" +
                         "评估报告之日起10日内向本院提交。未到场及逾期未提异议，将被视为放弃相关权利"},
-                {null},
                 {""}
         };
     }

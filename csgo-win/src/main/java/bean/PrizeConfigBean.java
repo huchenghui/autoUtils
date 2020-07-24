@@ -1,5 +1,6 @@
 package bean;
 
+import config.EnumHttp;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,18 +23,19 @@ public class PrizeConfigBean {
 
     @DataProvider(name = "prizeBean")
     public Object[][] data(){
+        String img = EnumHttp.IMG_PATH.getVal();
         return new Object[][]{
-                {new PrizeConfigBean("com","",6,"奖品001",20,"PRIZE","15756240257"),"奖品001"},
-                {new PrizeConfigBean("rate err","",7,"奖品002","30","FAKE","15756240257"),null},
-                {new PrizeConfigBean("location err","","7","奖品002",30,"FAKE","15756240257"),null},
-                {new PrizeConfigBean("type err","",7,"奖品002",30,"non","15756240257"),null},
-                {new PrizeConfigBean("location err","",10,"奖品002",30,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("location err","",-10,"奖品002",30,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("location err","",5,"奖品002",30,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("rate err","",6,"奖品002",101,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("rate err","",4,"奖品002",-10,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("","",2,"rate大于0时command不能为空",10,"TIMES","15756240257"),null},
-                {new PrizeConfigBean("WECHAT","",3,"rate大于0时wechat不能为空",10,"TIMES",""),null}
+                {new PrizeConfigBean("com",img ,6,"奖品001",20,"PRIZE","15756240257"),"奖品001"},
+                {new PrizeConfigBean("",img,7,"暗号不能为空","30","PRIZE","15756240257"),null},
+                {new PrizeConfigBean("com",null,7,"图片不能为空","30","PRIZE","15756240257"),null},
+                {new PrizeConfigBean("奖品名称不能为空",img,7,"","30","PRIZE","15756240257"),null},
+                {new PrizeConfigBean("com",img,7,"领奖微信不能为空","30","PRIZE",""),null},
+                {new PrizeConfigBean("location err",img,"7","location7",30,"FAKE","15756240257"),null},
+                {new PrizeConfigBean("type err",img,7,"奖品类型错误",30,"non","15756240257"),null},
+                {new PrizeConfigBean("location err",img,10,"奖品002",30,"TIMES","15756240257"),null},
+                {new PrizeConfigBean("location err",img,-10,"奖品002",30,"TIMES","15756240257"),null},
+                {new PrizeConfigBean("location err",img,5,"奖品002",30,"TIMES","15756240257"),null},
+
         };
     }
 

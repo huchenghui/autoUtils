@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="api_auto">
-    <test name="dy_mini_program" preserve-order="true" parallel="classes">
+    <test name="dy_mini_program" preserve-order="true">
         <classes>
             <class name="dy_mini_program_test.LoginAndLogoutTest"/>
             <class name="dy_mini_program_test.PrizeConfigTest"/>
-            <class name="dy_mini_program_test.RegisterTest"/>
+<!--            <class name="dy_mini_program_test.RegisterTest"/>-->
             <class name="dy_mini_program_test.SysSettingTest"/>
-            <class name="dy_mini_program_test.UpdatePwdTest"/>
+<!--            <class name="dy_mini_program_test.UpdatePwdTest"/>-->
         </classes>
     </test>
 </suite>

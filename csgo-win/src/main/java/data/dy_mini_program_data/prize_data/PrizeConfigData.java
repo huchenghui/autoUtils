@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public class PrizeConfigData {
 
-    public static JSONObject prizeConfig(PrizeConfigBean bean){
+    public static String  prizeConfig(PrizeConfigBean bean){
         JSONObject json = new JSONObject();
         json.put("command",bean.getCommand());
         json.put("img",bean.getImg());
@@ -14,7 +14,7 @@ public class PrizeConfigData {
         json.put("rate",bean.getRate());
         json.put("type",bean.getType());
         json.put("wechat",bean.getWechat());
-        return json;
+        return json.toJSONString();
     }
 
 

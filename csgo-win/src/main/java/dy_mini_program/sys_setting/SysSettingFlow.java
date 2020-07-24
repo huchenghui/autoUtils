@@ -23,13 +23,13 @@ public class SysSettingFlow {
     public static JSONObject noticeConfig(String content,String token) throws Exception {
         JSONObject json = new JSONObject();
         json.put("notice",content);
-        return JSON.parseObject(HttpUtils.analysis(HttpUtils.doPost(NOTICE_URL,json,token)));
+        return JSON.parseObject(HttpUtils.analysis(HttpUtils.doPost(NOTICE_URL,json.toJSONString(),token)));
     }
 
     //规则
     public static JSONObject ruleConfig(String content,String token) throws Exception {
         JSONObject json = new JSONObject();
         json.put("rule",content);
-        return JSON.parseObject(HttpUtils.analysis(HttpUtils.doPost(RULE_URL,json,token)));
+        return JSON.parseObject(HttpUtils.analysis(HttpUtils.doPost(RULE_URL,json.toJSONString(),token)));
     }
 }

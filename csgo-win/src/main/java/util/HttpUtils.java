@@ -2,12 +2,16 @@ package util;
 
 import com.alibaba.fastjson.JSONObject;
 import config.EnumHttp;
+import io.qameta.allure.Allure;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -39,6 +43,9 @@ public class HttpUtils {
     private static CloseableHttpResponse response = null;
 
 
+    public static void addAllureResp(String resp){
+        Allure.description("response data >>>\n\n" + resp);
+    }
 
     /**
      * 解析响应
@@ -88,6 +95,7 @@ public class HttpUtils {
         }
         HttpPost post = new HttpPost(url);
         post.setEntity(builder.build());
+        Allure.parameter("request data >>>",json);
         if (author != null){
             post.setHeader("Authorization","Bearer "+ author);
         }
@@ -126,25 +134,25 @@ public class HttpUtils {
     /**
      * 发送post请求，请求体为json格式
      * @param url 请求地址
-     * @param jsonBody 请求参数
+     * @param requestData 请求参数
      * **/
-    public static CloseableHttpResponse doPost(String url,JSONObject jsonBody,String author) throws Exception {
-        return doRequest("post",url,jsonBody,author);
+    public static CloseableHttpResponse doPost(String url,String requestData,String author) throws Exception {
+        return doRequest("post",url,requestData,author);
     }
     
-    public static CloseableHttpResponse doPut(String url,JSONObject jsonBody,String author) throws Exception {
-        return doRequest("put",url,jsonBody,author);
+    public static CloseableHttpResponse doPut(String url,String requestData,String author) throws Exception {
+        return doRequest("put",url,requestData,author);
     }
     
-    public static CloseableHttpResponse doDelete(String url,JSONObject jsonBody,String author) throws Exception {
-        return doRequest("delete",url,jsonBody,author);
+    public static CloseableHttpResponse doDelete(String url,String requestData,String author) throws Exception {
+        return doRequest("delete",url,requestData,author);
     }
     
 
-    private static CloseableHttpResponse doRequest(String method,String url,JSONObject jsonBody,String author) throws IOException {
+    private static CloseableHttpResponse doRequest(String method,String url,String requestData,String author) throws IOException {
         StringEntity entity;
         RequestBuilder request = null;
-        
+
         if ("post".equalsIgnoreCase(method)){
             request = RequestBuilder.post(url);
         }else if ("put".equalsIgnoreCase(method)){
@@ -154,12 +162,13 @@ public class HttpUtils {
             request = RequestBuilder.delete(url);
         }
         
-        if (jsonBody != null){
-            entity = new StringEntity(jsonBody.toJSONString(), ContentType.APPLICATION_JSON);
+        if (!"".equals(requestData)){
+            entity = new StringEntity(requestData, ContentType.APPLICATION_JSON);
             if (request != null) {
                 request.setEntity(entity);
             }
         }
+        Allure.parameter("request data >>>",requestData);
         
         if (author != null){
             if (request != null) {
@@ -190,6 +199,7 @@ public class HttpUtils {
             list.add(new BasicNameValuePair(map.getKey(),map.getValue().toString()));
         }
         post.setEntity(new UrlEncodedFormEntity(list));
+        Allure.parameter("request data >>>",json);
         if (author != null){
             post.setHeader("Authorization","Bearer "+ author);
         }
