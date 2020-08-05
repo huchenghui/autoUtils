@@ -9,7 +9,7 @@
 *.rar
 #maven ignore
 target/
-*/config
+config
 
 #eclipse ignore
 .settings/
