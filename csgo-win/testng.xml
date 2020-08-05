@@ -4,9 +4,9 @@
     <test name="dy_mini_program" preserve-order="true">
         <classes>
             <class name="dy_mini_program_test.LoginAndLogoutTest"/>
-            <class name="dy_mini_program_test.PrizeConfigTest"/>
-<!--            <class name="dy_mini_program_test.RegisterTest"/>-->
-            <class name="dy_mini_program_test.SysSettingTest"/>
+<!--            <class name="dy_mini_program_test.PrizeConfigTest"/>-->
+<!--            <class name="dy_mini_program_test.CustomerTest"/>-->
+<!--            <class name="dy_mini_program_test.SysSettingTest"/>-->
 <!--            <class name="dy_mini_program_test.UpdatePwdTest"/>-->
         </classes>
     </test>

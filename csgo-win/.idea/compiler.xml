@@ -7,7 +7,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="csgo-win" />
+        <module name="dy-mini-program" />
+        <module name="csgo-internet-bar-version" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8" />
