@@ -26,7 +26,11 @@ public class CustomerDDT {
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), null,PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少messageCode\"}}","短信验证码为NULL"},
                 {new RegisterBean(DEVICE_ID,MOBILE,null, VerifyCode.getMessageCode(DEVICE_ID,MOBILE),PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少graphicCode\"}}","图形验证码为NULL"},
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"1111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度等于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111111111111111111111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度大于20位"},
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabc"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabcd"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度等于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabcdabcabcdabcabcdabc"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度大于20位"},
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111ac"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母组合密码长度小于6位"},
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"1#$ac"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母+特殊字符密码长度小于6位"},
                 {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111ac111ac111ac111ac1"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母密码长度大于20位"},
@@ -46,6 +50,31 @@ public class CustomerDDT {
                 {new RegisterBean(DEVICE_ID,"13100001113",null,null,LOGIN_PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"设备ID获取失败\"}}","手机号与设备ID不匹配"},
                 {new RegisterBean(DEVICE_ID,"1575624025",null,null,LOGIN_PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"手机号码格式错误\"}}","手机号格式错误"},
                 {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,null,null,LOGIN_PWD),"result","正常数据，登录成功"},
+        };
+    }
+
+    @DataProvider
+    public Object[][] resetTradePwd() throws Exception {
+        return new Object[][]{
+                {new RegisterBean(null,LOGIN_MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少deviceId\"}}","设备ID为空"},
+                {new RegisterBean(DEVICE_ID,null,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少mobile\"}}","手机号为空"},
+                {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,null, VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少graphicCode\"}}","图形验证码为空"},
+                {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),PWD),"{\"status\":500,\"error\":{\"code\":107004,\"msg\":\"图形验证码错误\"}}","图形验证码错误"},
+                {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), null,PWD),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少messageCode\"}}","短信验证码为空"},
+                {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),PWD),"{\"status\":500,\"error\":{\"code\":107004,\"msg\":\"短信验证码错误\"}}","短信验证码错误"},
+                {new RegisterBean(DEVICE_ID,LOGIN_MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,LOGIN_MOBILE),null),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"缺少password\"}}","密码为空"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"1111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度等于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111111111111111111111111"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯数字密码长度大于20位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabc"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabcd"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度等于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"abcabcdabcabcdabcabcdabc"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","纯字母密码长度大于20位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111ac"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母组合密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"1#$ac"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母+特殊字符密码长度小于6位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111ac111ac111ac111ac1"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母密码长度大于20位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"111%%111ac111ac111ac1"),"{\"status\":422,\"error\":{\"code\":422,\"msg\":\"密码错误(至少包含数字和字母,长度6~20位)\"}}","数字+字母+特殊字符密码长度大于20位"},
+                {new RegisterBean(DEVICE_ID,MOBILE,VerifyCode.getGraphicCode(DEVICE_ID), VerifyCode.getMessageCode(DEVICE_ID,MOBILE),"1qaz2wsx"),"{\"result\":\"success\",\"code\":200}","正常数据，密码重置成功"}
+
         };
     }
 }

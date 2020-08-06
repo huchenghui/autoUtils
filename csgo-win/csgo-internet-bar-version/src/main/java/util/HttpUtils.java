@@ -65,13 +65,14 @@ public class HttpUtils {
     public static String runCaseByExcel(String testCase,String token) throws Exception {
         String resp;
         JSONObject ddt = JSON.parseObject(testCase);
+        LOG.info("test case id is >> {}",ddt.getString("id"));
         String url = EnumHttp.API_DOMAIN.getVal() + ddt.getString("api_path");
-        LOG.info("REQUEST URL IS >> {}",url);
+//        LOG.info("REQUEST URL IS >> {}",url);
         String reqData = ddt.getString("parameter_data");
-        LOG.info("REQUEST PARAM IS >> {}",reqData);
+//        LOG.info("REQUEST PARAM IS >> {}",reqData);
         String transferType = ddt.getString("transfer_type");
         String method = ddt.getString("method");
-        LOG.info("REQUEST METHOD IS >> {}",method);
+//        LOG.info("REQUEST METHOD IS >> {}",method);
 
         if ("get".equalsIgnoreCase(method))
         {

@@ -11,7 +11,8 @@ public class Customer {
     private static final String REG_URL = DOMAIN + "/user/register";
     private static final String LOGIN_URL = DOMAIN + "/user/login";
     private static final String GET_USER_INFO_URL = DOMAIN + "/user/getUserInfo";
-    private static final String SET_TRADE_URL = DOMAIN + "/user/setSteamTradeUrl";
+//    private static final String SET_TRADE_URL = DOMAIN + "/user/setSteamTradeUrl";
+    private static final String RESET_PWD_URL = DOMAIN + "/user/resetPassword";
 
     public static String register(RegisterBean reg,String author,String desc) throws Exception {
         return HttpUtils.analysis(HttpUtils.doPost(REG_URL,JSON.toJSONString(reg),author,desc));
@@ -27,6 +28,10 @@ public class Customer {
 
     public static String setTradeUrl(String testCase,String author) throws Exception {
         return HttpUtils.runCaseByExcel(testCase,author);
+    }
+
+    public static String resetPwd(RegisterBean reg,String author,String desc) throws Exception {
+        return HttpUtils.analysis(HttpUtils.doPost(RESET_PWD_URL,JSON.toJSONString(reg),author,desc));
     }
 
 }

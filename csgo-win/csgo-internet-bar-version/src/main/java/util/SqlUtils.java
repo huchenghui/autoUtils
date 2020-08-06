@@ -35,6 +35,7 @@ public class SqlUtils {
         while (resultSet.next()){
             val = resultSet.getString(1);
         }
+        LOG.info("result is >> {}",val);
         return val;
     }
 

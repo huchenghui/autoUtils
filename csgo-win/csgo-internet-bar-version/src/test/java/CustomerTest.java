@@ -9,6 +9,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import request.Customer;
 import util.HttpUtils;
+import util.VerifyCode;
 
 public class CustomerTest {
 
@@ -49,13 +50,30 @@ public class CustomerTest {
         {
             e.printStackTrace();
         }
-        if ("正常数据，登录成功".equals(testDesc))
+        if (testDesc.contains("正常数据"))
         {
 //            token = JSON.parseObject(resp).getJSONObject("result").getString("token");
             Assert.assertTrue(JSON.parseObject(resp).containsKey(expect));
         }else {
             Assert.assertEquals(resp,expect);
         }
+    }
+
+    @Test(dataProviderClass = CustomerDDT.class,dataProvider = "resetTradePwd")
+    public void resetPassword(RegisterBean reg, String expect, String testDesc){
+        try {
+            if ("图形验证码错误".equals(expect)){
+                reg.setGraphicCode(VerifyCode.getGraphicCode(reg.getDeviceId()));
+            }
+            if ("短信验证码错误".equals(expect)){
+                reg.setMessageCode(VerifyCode.getMessageCode(reg.getDeviceId(),reg.getMobile()));
+            }
+            resp = Customer.resetPwd(reg,null,testDesc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(resp,expect);
+
     }
 
     @Test(dataProvider = "userInfo")
@@ -79,7 +97,12 @@ public class CustomerTest {
     @Test(dataProvider = "tradeUrl")
     public void setTradeUrl(String testCase, String expect){
         try {
-            resp = Customer.setTradeUrl(testCase,token);
+            if (JSON.parseObject(testCase).getString("title").equals("token为空"))
+            {
+                resp = Customer.setTradeUrl(testCase, null);
+            }else {
+                resp = Customer.setTradeUrl(testCase, token);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
